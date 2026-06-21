@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Better-VC - File Sharing &amp; Media Gallery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-container": "#661600",
+                      "on-primary-container": "#641800",
+                      "secondary-container": "#3e4b51",
+                      "error": "#ffb4ab",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-lowest": "#0e0e0e",
+                      "surface-bright": "#393939",
+                      "on-secondary-fixed": "#101d23",
+                      "on-tertiary": "#601400",
+                      "outline": "#a88a82",
+                      "primary-fixed-dim": "#ffb59f",
+                      "surface-dim": "#131313",
+                      "surface-tint": "#ffb59f",
+                      "secondary": "#bbc9d0",
+                      "on-primary": "#5e1600",
+                      "on-primary-fixed": "#3a0a00",
+                      "tertiary-fixed-dim": "#ffb5a0",
+                      "tertiary-container": "#ff7048",
+                      "on-background": "#e5e2e1",
+                      "inverse-surface": "#e5e2e1",
+                      "surface-variant": "#353534",
+                      "surface-container": "#201f1f",
+                      "on-primary-fixed-variant": "#852300",
+                      "on-secondary-container": "#adbbc2",
+                      "secondary-fixed": "#d7e5ec",
+                      "surface": "#131313",
+                      "on-error": "#690005",
+                      "primary-fixed": "#ffdbd0",
+                      "inverse-on-surface": "#313030",
+                      "surface-container-low": "#1c1b1b",
+                      "primary": "#ffb59f",
+                      "on-tertiary-fixed-variant": "#872000",
+                      "outline-variant": "#59413a",
+                      "tertiary": "#ffb5a0",
+                      "on-secondary-fixed-variant": "#3c494f",
+                      "surface-container-highest": "#353534",
+                      "inverse-primary": "#ac3509",
+                      "error-container": "#93000a",
+                      "surface-container-high": "#2a2a2a",
+                      "on-surface": "#e5e2e1",
+                      "background": "#131313",
+                      "secondary-fixed-dim": "#bbc9d0",
+                      "on-surface-variant": "#e0bfb6",
+                      "tertiary-fixed": "#ffdbd1",
+                      "on-secondary": "#253238",
+                      "primary-container": "#ff7043",
+                      "on-tertiary-fixed": "#3b0900"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "container-max": "1440px",
+                      "gutter": "16px",
+                      "xs": "4px",
+                      "xl": "40px",
+                      "sm": "8px",
+                      "lg": "24px",
+                      "unit": "4px",
+                      "md": "16px"
+              },
+              "fontFamily": {
+                      "label-caps": [
+                              "JetBrains Mono"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "code-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-md-mobile": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "label-caps": [
+                              "11px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "code-sm": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md-mobile": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        /* Base styles derived from guidance */
+        body {
+            background-color: #121212;
+            color: #e5e2e1;
+        }
+        
+        .bg-base-L0 { background-color: #121212; }
+        .bg-surface-L1 { background-color: #1E1E1E; }
+        .bg-elevated-L2 { background-color: #2A2A2A; }
+        
+        .border-base { border-color: #333333; }
+        
+        .text-rust { color: #FF7043; }
+        .bg-rust { background-color: #FF7043; }
+        .border-rust { border-color: #FF7043; }
+        
+        .text-slate { color: #B0BEC5; }
+        
+        /* Custom scrollbar for technical feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121212; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333333; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF7043; 
+        }
+        
+        /* Minimalist Button Hover */
+        .btn-ghost:hover {
+            color: #FF7043;
+        }
+    </style>
+</head>
+<body class="bg-surface-container-lowest font-body-md text-body-md antialiased h-screen flex overflow-hidden">
+<!-- Sidebar Component (Predicted) -->
+<nav class="hidden md:flex flex-col w-[280px] h-full bg-surface-container-low border-r border-outline-variant z-50 fixed left-0 top-0">
+<!-- Header -->
+<div class="h-16 flex items-center px-md border-b border-outline-variant gap-sm">
+<div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-primary text-xl">terminal</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">System Root</h1>
+<span class="font-code-sm text-code-sm text-on-surface-variant flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-green-500"></span> Online
+                </span>
+</div>
+</div>
+<!-- Main Navigation -->
+<div class="flex-1 overflow-y-auto py-sm">
+<ul class="flex flex-col gap-xs px-sm">
+<li>
+<a class="flex items-center gap-md px-sm py-xs text-on-surface-variant hover:bg-surface-container-highest transition-colors duration-200 cursor-pointer active:scale-95 rounded" href="#">
+<span class="material-symbols-outlined text-xl">home</span>
+<span>Home</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-sm py-xs text-on-surface-variant hover:bg-surface-container-highest transition-colors duration-200 cursor-pointer active:scale-95 rounded" href="#">
+<span class="material-symbols-outlined text-xl">chat</span>
+<span>Direct Messages</span>
+</a>
+</li>
+<li class="mt-md mb-xs px-sm">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Channels</span>
+</li>
+<li>
+<a class="flex items-center gap-md px-sm py-xs text-on-surface-variant hover:bg-surface-container-highest transition-colors duration-200 cursor-pointer active:scale-95 rounded" href="#">
+<span class="material-symbols-outlined text-xl">memory</span>
+<span>Rust Dev</span>
+</a>
+</li>
+<li>
+<!-- Active State -->
+<a class="flex items-center gap-md px-sm py-xs border-l-4 border-primary bg-surface-container-high text-primary transition-colors duration-200 cursor-pointer active:scale-95 rounded-r" href="#">
+<span class="material-symbols-outlined text-xl">terminal</span>
+<span>Linux Kernel</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-sm py-xs text-on-surface-variant hover:bg-surface-container-highest transition-colors duration-200 cursor-pointer active:scale-95 rounded" href="#">
+<span class="material-symbols-outlined text-xl">settings_input_component</span>
+<span>SysAdmin</span>
+</a>
+</li>
+</ul>
+</div>
+<!-- CTA & Footer -->
+<div class="p-sm border-t border-outline-variant flex flex-col gap-sm">
+<button class="w-full flex items-center justify-center gap-sm bg-primary-container text-on-primary-container font-label-caps text-label-caps py-sm rounded hover:bg-opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-lg">add</span>
+                New Server
+            </button>
+<div class="flex justify-between items-center px-sm mt-xs">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">settings</span></a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">help</span></a>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-[280px] flex flex-col relative h-full">
+<!-- TopNavBar Component (Predicted) -->
+<header class="docked full-width top-0 h-16 bg-surface border-b border-outline-variant flex justify-between items-center w-full px-md shrink-0">
+<div class="flex items-center gap-md">
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface flex items-center gap-xs">
+<span class="text-on-surface-variant font-code-sm text-code-sm">#</span>
+                    general-discussion
+                </h2>
+<nav class="hidden lg:flex gap-md ml-lg">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md py-xs" href="#">Threads</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md py-xs" href="#">Pins</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md py-xs" href="#">Notifications</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<!-- Icon Actions -->
+<div class="hidden sm:flex items-center gap-sm text-on-surface-variant">
+<button class="hover:text-primary transition-colors"><span class="material-symbols-outlined">push_pin</span></button>
+<button class="hover:text-primary transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="hover:text-primary transition-colors"><span class="material-symbols-outlined">group</span></button>
+</div>
+<!-- Search (on_right) -->
+<div class="relative hidden md:block">
+<input class="bg-surface-container-high border border-outline-variant rounded font-code-sm text-code-sm text-on-surface px-sm py-xs pl-8 focus:border-primary focus:outline-none transition-colors w-48 placeholder:text-on-surface-variant" placeholder="Search..." type="text"/>
+<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+</div>
+</div>
+</header>
+<!-- Chat Area (Simplified context) -->
+<div class="flex-1 overflow-y-auto p-md flex flex-col gap-lg pb-24">
+<!-- Mock Chat Message -->
+<div class="flex gap-sm">
+<div class="w-10 h-10 rounded bg-surface-container-high flex-shrink-0 flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-primary">person</span>
+</div>
+<div>
+<div class="flex items-baseline gap-sm mb-xs">
+<span class="font-bold text-on-surface">root_user</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant text-xs">10:42 AM</span>
+</div>
+<p class="text-on-surface-variant font-body-md text-body-md">Deployed the new kernel patches. Logs are attached below. Can someone review the diffs?</p>
+</div>
+</div>
+<!-- Mock Chat Message -->
+<div class="flex gap-sm">
+<div class="w-10 h-10 rounded bg-surface-container-high flex-shrink-0 flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-tertiary">code</span>
+</div>
+<div>
+<div class="flex items-baseline gap-sm mb-xs">
+<span class="font-bold text-on-surface">dev_ops_bot</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant text-xs">10:45 AM</span>
+</div>
+<p class="text-on-surface-variant font-body-md text-body-md">CI pipeline completed successfully. Build artifacts ready.</p>
+</div>
+</div>
+</div>
+<!-- Chat Input Area -->
+<div class="absolute bottom-0 w-full p-md bg-surface border-t border-outline-variant">
+<div class="bg-surface-container-high border border-outline-variant rounded-lg flex flex-col">
+<div class="flex-1 p-sm">
+<textarea class="w-full bg-transparent border-none focus:ring-0 text-on-surface font-body-md text-body-md resize-none placeholder:text-on-surface-variant h-12" placeholder="Message #general-discussion..."></textarea>
+</div>
+<div class="bg-surface-container-low px-sm py-xs flex justify-between items-center border-t border-outline-variant rounded-b-lg">
+<div class="flex items-center gap-sm text-on-surface-variant">
+<button class="hover:text-primary transition-colors p-xs"><span class="material-symbols-outlined text-xl">add_circle</span></button>
+<button class="text-primary transition-colors p-xs bg-surface-container-highest rounded border border-outline-variant"><span class="material-symbols-outlined text-xl">attach_file</span></button>
+<button class="hover:text-primary transition-colors p-xs"><span class="material-symbols-outlined text-xl">mood</span></button>
+</div>
+<button class="bg-primary-container text-on-primary-container px-sm py-xs rounded font-label-caps text-label-caps flex items-center gap-xs hover:bg-opacity-90">
+<span class="material-symbols-outlined text-sm">send</span> SEND
+                     </button>
+</div>
+</div>
+</div>
+<!-- File Sharing / Media Gallery Drawer Modal -->
+<!-- Overlay -->
+<div class="absolute inset-0 bg-black/50 z-[100] backdrop-blur-sm flex justify-end">
+<!-- Drawer Container -->
+<div class="w-full max-w-md h-full bg-surface-container-low border-l border-outline-variant shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out translate-x-0">
+<!-- Drawer Header -->
+<div class="h-16 flex items-center justify-between px-md border-b border-outline-variant bg-surface-container">
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">folder_open</span>
+                        File Manager
+                    </h3>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-xs rounded hover:bg-surface-container-highest">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Storage Indicator -->
+<div class="px-md py-sm border-b border-outline-variant bg-surface-container-lowest">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-caps text-label-caps text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm text-tertiary">cloud</span>
+                            Cloudflare R2 Storage
+                        </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">42.5 GB / 100 GB</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-[42.5%] rounded-full"></div>
+</div>
+</div>
+<!-- Active Uploads (Bento Style Card) -->
+<div class="p-md border-b border-outline-variant bg-surface-container-low">
+<h4 class="font-label-caps text-label-caps text-on-surface-variant mb-sm uppercase tracking-wider">Active Transfers</h4>
+<div class="bg-surface-container border border-outline-variant rounded p-sm flex items-center gap-md">
+<div class="w-12 h-12 bg-surface-container-highest rounded border border-outline-variant flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+<img class="absolute inset-0 w-full h-full object-cover opacity-50" data-alt="A macro shot of a complex circuit board with glowing orange traces against a dark grey background. High contrast, sharp focus, industrial technical aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjDLBb4e-NHNk1bNrI4rxbWD2yPy8H4d65E79zhJEoTVFPXnW2gtY34amkac451qLVU0R0OZdwsy4gY-ogoeH_6CI4x8rkzS-9Nn2TKuLBJqmRakQ89C0aoh37mdGbroLebh6Jhiej2drbKrF7h4MpOsdNAoxtj-qaFoU7HgUNt6zJAaHipcj0MwJ7k-Enwsl5wd9a6g_iWr2Ccda18V6FS6ez5_2JYowFcoVpf9aUvEdS7EF26TgiAr1VvPOVOZRgxdddlWhLWfQ"/>
+<span class="material-symbols-outlined text-on-surface relative z-10">description</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-xs">
+<p class="font-code-sm text-code-sm text-on-surface truncate">kernel_panic_log_v2.tar.gz</p>
+<span class="font-code-sm text-code-sm text-on-surface-variant text-xs shrink-0">68%</span>
+</div>
+<div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden mb-xs">
+<div class="h-full bg-primary w-[68%] rounded-full"></div>
+</div>
+<p class="font-code-sm text-code-sm text-on-surface-variant text-[10px]">Uploading... 2.4 MB/s</p>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors p-xs">
+<span class="material-symbols-outlined text-sm">cancel</span>
+</button>
+</div>
+</div>
+<!-- Media Gallery Grid -->
+<div class="flex-1 overflow-y-auto p-md">
+<div class="flex justify-between items-center mb-md">
+<h4 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Recent Media</h4>
+<div class="flex gap-xs">
+<button class="bg-surface-container-highest text-primary border border-primary px-sm py-xs rounded font-label-caps text-label-caps transition-colors">Grid</button>
+<button class="bg-transparent text-on-surface-variant border border-outline-variant px-sm py-xs rounded font-label-caps text-label-caps hover:text-primary transition-colors">List</button>
+</div>
+</div>
+<!-- Asymmetric / Dense Grid Layout -->
+<div class="grid grid-cols-2 gap-sm">
+<!-- Video Item (Spans 2 cols) -->
+<div class="col-span-2 group relative rounded overflow-hidden border border-outline-variant bg-surface-container h-32 cursor-pointer">
+<div class="absolute inset-0 bg-surface-container-highest z-0">
+<img class="w-full h-full object-cover opacity-60 mix-blend-luminosity group-hover:opacity-100 transition-opacity duration-300" data-alt="A dark terminal screen displaying fast-scrolling green and white code text. Cinematic depth of field, focused on the center, hacker aesthetic, technical environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoFTEla82JqKhaGEGGz8URRUqPvkc2b7eqkvJi0bEF4FaEOEybV8XvfAZUCRkgJbB2hz_nNvN8MLHPs00Q2jfh9MKlh2SfHek1fxd_ZQVQeyOChhFAEQiNAzqzid95NbNnG7EavG162xYDSXKs_3pC_Tkvp2ojn_kmLm5um5_jxDKsgy_kHMWT-nUxG3LjcZ4w24NJePc2-F3WTvwKn6IElA3GrgvRrmF6RTM1LlCOiAJuzzU0XixGvGGGJePDnr8c2RA9zdsNVdw"/>
+</div>
+<!-- Overlay gradients -->
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 to-transparent z-10"></div>
+<!-- Content -->
+<div class="absolute inset-0 p-sm flex flex-col justify-between z-20">
+<div class="flex justify-between items-start">
+<span class="bg-surface-container-lowest/80 backdrop-blur-sm border border-outline-variant font-code-sm text-code-sm text-on-surface px-xs py-0.5 rounded flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">play_circle</span> MP4
+                                    </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant bg-surface-container-lowest/80 px-xs py-0.5 rounded">12:04</span>
+</div>
+<div>
+<p class="font-code-sm text-code-sm text-on-surface truncate font-bold shadow-sm">deployment_demo.mp4</p>
+<p class="font-code-sm text-code-sm text-on-surface-variant text-xs">450 MB • Today, 09:30</p>
+</div>
+</div>
+</div>
+<!-- Image Item 1 -->
+<div class="group relative rounded overflow-hidden border border-outline-variant bg-surface-container h-24 cursor-pointer">
+<div class="absolute inset-0 bg-surface-container-highest z-0">
+<img class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-300" data-alt="A sleek, modern server rack illuminated by cool blue and warm orange LED lights in a dark data center. High resolution, professional hardware photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOHPZ4OXFTiUByFG6xpbFcqfrJPRgJp7FaCPNNXmJG7YGs48UE_MjABfBSACPsjqBSrPsrlqbmBd8ZpjhpQCBE9R9-cD3VNjZ35AOECXwyZ4YqM452UPNn8e6zbSKyDbRd2JEAc_chQNeYhjCA_XcZ53eIerAUqvG5bR1S0QWRlr_RMtQlwZETb3JwKs0iBveWEh4XkNBEJ4ssbDtqeCPJT_o_vfT-XEmor04TGlyE6Q6Hnqz8714khDGSyEYpJW0OgpIu5rZsgmg"/>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+<div class="absolute bottom-0 left-0 right-0 p-xs z-20 transform translate-y-full group-hover:translate-y-0 transition-transform duration-200">
+<p class="font-code-sm text-code-sm text-on-surface truncate text-xs">server_rack_A.jpg</p>
+</div>
+<span class="absolute top-sm right-sm material-symbols-outlined text-on-surface text-sm drop-shadow-md z-20">image</span>
+</div>
+<!-- Image Item 2 -->
+<div class="group relative rounded overflow-hidden border border-outline-variant bg-surface-container h-24 cursor-pointer">
+<div class="absolute inset-0 bg-surface-container-highest z-0">
+<img class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-300" data-alt="A minimalist architectural blueprint showing a network topology diagram, drawn with precise white lines on a dark blueprint background. Clean, technical, schematic style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2GLsnv8VUaB9-ONqTj9G6OlGFIe5dvUiwteE3UXscaHvz0fgKhjcYkPG3JIkUtGqxiQ9dCAcU5snJJty35ujgmUdjW5EcQVGJaBPPDYBCdkqfe7EqUZhQL4ZttzL5WC7Js0VxRUFEh5LlUBJyesmRy4MuT-0j2PgWV_bLDNVXrBm_PEc-EJ4iM99OlZRO40fR2Vj3iX2CozlEALaOX8Lyo8yxT5kSaLyfGly3ofIZEFqAubx8txAuYCPr5TiH9yt2QVbisvss2Ks"/>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+<div class="absolute bottom-0 left-0 right-0 p-xs z-20 transform translate-y-full group-hover:translate-y-0 transition-transform duration-200">
+<p class="font-code-sm text-code-sm text-on-surface truncate text-xs">net_topo_v4.png</p>
+</div>
+<span class="absolute top-sm right-sm material-symbols-outlined text-on-surface text-sm drop-shadow-md z-20">image</span>
+</div>
+<!-- Document Item (Non-image) -->
+<div class="group relative rounded border border-outline-variant bg-surface-container-low hover:bg-surface-container-high transition-colors h-24 flex flex-col items-center justify-center cursor-pointer">
+<span class="material-symbols-outlined text-3xl text-on-surface-variant group-hover:text-primary mb-xs transition-colors">description</span>
+<p class="font-code-sm text-code-sm text-on-surface truncate w-full text-center px-xs text-xs">config_backup.yaml</p>
+</div>
+<!-- Add New / Dropzone -->
+<div class="group relative rounded border-2 border-dashed border-outline-variant bg-surface-container-lowest hover:border-primary hover:bg-surface-container-high transition-colors h-24 flex flex-col items-center justify-center cursor-pointer">
+<span class="material-symbols-outlined text-2xl text-on-surface-variant group-hover:text-primary mb-xs transition-colors">add</span>
+<p class="font-label-caps text-label-caps text-on-surface-variant group-hover:text-primary transition-colors">Upload</p>
+</div>
+</div>
+</div>
+<!-- Drawer Footer Actions -->
+<div class="p-sm border-t border-outline-variant bg-surface-container flex gap-sm">
+<button class="flex-1 bg-transparent border border-outline-variant text-on-surface-variant font-label-caps text-label-caps py-sm rounded hover:text-on-surface hover:border-on-surface transition-colors">Cancel</button>
+<button class="flex-1 bg-primary-container text-on-primary-container font-label-caps text-label-caps py-sm rounded hover:bg-opacity-90 transition-opacity flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-sm">cloud_upload</span> Attach Files
+                    </button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

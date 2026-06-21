@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    @apply h-full;
+  }
+
+  body {
+    @apply bg-background text-on-surface font-body text-body-md antialiased;
+    /* Native-app feel: no rubber-band scroll, no text selection by default. */
+    @apply select-none overflow-hidden;
+  }
+
+  /* Carbon & Rust webkit scrollbar (Tauri ships WebKit). */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #353534;
+    border-radius: 0;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #59413a;
+  }
+}
+
+@layer components {
+  /* Auth screen: subtle "terminal grid" backdrop (ported from Stitch auth design). */
+  .terminal-bg {
+    background-image: linear-gradient(
+        rgba(19, 19, 19, 0.9),
+        rgba(19, 19, 19, 0.9)
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 20px,
+        rgba(255, 112, 67, 0.03) 20px,
+        rgba(255, 112, 67, 0.03) 21px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 20px,
+        rgba(255, 112, 67, 0.03) 20px,
+        rgba(255, 112, 67, 0.03) 21px
+      );
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+  }
+}

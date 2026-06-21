@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Friends - Better-VC</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "on-tertiary-container": "#661600",
+                            "on-primary-container": "#641800",
+                            "secondary-container": "#3e4b51",
+                            "error": "#ffb4ab",
+                            "on-error-container": "#ffdad6",
+                            "surface-container-lowest": "#0e0e0e",
+                            "surface-bright": "#393939",
+                            "on-secondary-fixed": "#101d23",
+                            "on-tertiary": "#601400",
+                            "outline": "#a88a82",
+                            "primary-fixed-dim": "#ffb59f",
+                            "surface-dim": "#131313",
+                            "surface-tint": "#ffb59f",
+                            "secondary": "#bbc9d0",
+                            "on-primary": "#5e1600",
+                            "on-primary-fixed": "#3a0a00",
+                            "tertiary-fixed-dim": "#ffb5a0",
+                            "tertiary-container": "#ff7048",
+                            "on-background": "#e5e2e1",
+                            "inverse-surface": "#e5e2e1",
+                            "surface-variant": "#353534",
+                            "surface-container": "#201f1f",
+                            "on-primary-fixed-variant": "#852300",
+                            "on-secondary-container": "#adbbc2",
+                            "secondary-fixed": "#d7e5ec",
+                            "surface": "#131313",
+                            "on-error": "#690005",
+                            "primary-fixed": "#ffdbd0",
+                            "inverse-on-surface": "#313030",
+                            "surface-container-low": "#1c1b1b",
+                            "primary": "#ffb59f",
+                            "on-tertiary-fixed-variant": "#872000",
+                            "outline-variant": "#59413a",
+                            "tertiary": "#ffb5a0",
+                            "on-secondary-fixed-variant": "#3c494f",
+                            "surface-container-highest": "#353534",
+                            "inverse-primary": "#ac3509",
+                            "error-container": "#93000a",
+                            "surface-container-high": "#2a2a2a",
+                            "on-surface": "#e5e2e1",
+                            "background": "#131313",
+                            "secondary-fixed-dim": "#bbc9d0",
+                            "on-surface-variant": "#e0bfb6",
+                            "tertiary-fixed": "#ffdbd1",
+                            "on-secondary": "#253238",
+                            "primary-container": "#ff7043",
+                            "on-tertiary-fixed": "#3b0900"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.125rem",
+                            "lg": "0.25rem",
+                            "xl": "0.5rem",
+                            "full": "0.75rem"
+                    },
+                    "spacing": {
+                            "container-max": "1440px",
+                            "gutter": "16px",
+                            "xs": "4px",
+                            "xl": "40px",
+                            "sm": "8px",
+                            "lg": "24px",
+                            "unit": "4px",
+                            "md": "16px"
+                    },
+                    "fontFamily": {
+                            "label-caps": [
+                                    "JetBrains Mono"
+                            ],
+                            "display-lg": [
+                                    "Inter"
+                            ],
+                            "body-md": [
+                                    "Inter"
+                            ],
+                            "code-sm": [
+                                    "JetBrains Mono"
+                            ],
+                            "body-lg": [
+                                    "Inter"
+                            ],
+                            "headline-md-mobile": [
+                                    "Inter"
+                            ],
+                            "headline-md": [
+                                    "Inter"
+                            ]
+                    },
+                    "fontSize": {
+                            "label-caps": [
+                                    "11px",
+                                    {
+                                            "lineHeight": "16px",
+                                            "letterSpacing": "0.05em",
+                                            "fontWeight": "700"
+                                    }
+                            ],
+                            "display-lg": [
+                                    "48px",
+                                    {
+                                            "lineHeight": "56px",
+                                            "letterSpacing": "-0.02em",
+                                            "fontWeight": "700"
+                                    }
+                            ],
+                            "body-md": [
+                                    "14px",
+                                    {
+                                            "lineHeight": "20px",
+                                            "fontWeight": "400"
+                                    }
+                            ],
+                            "code-sm": [
+                                    "13px",
+                                    {
+                                            "lineHeight": "18px",
+                                            "fontWeight": "400"
+                                    }
+                            ],
+                            "body-lg": [
+                                    "16px",
+                                    {
+                                            "lineHeight": "24px",
+                                            "fontWeight": "400"
+                                    }
+                            ],
+                            "headline-md-mobile": [
+                                    "20px",
+                                    {
+                                            "lineHeight": "28px",
+                                            "fontWeight": "600"
+                                    }
+                            ],
+                            "headline-md": [
+                                    "24px",
+                                    {
+                                            "lineHeight": "32px",
+                                            "letterSpacing": "-0.01em",
+                                            "fontWeight": "600"
+                                    }
+                            ]
+                    }
+            },
+                },
+        }
+    </script>
+</head>
+<body class="bg-surface-container-lowest text-on-surface h-screen flex overflow-hidden font-body-md text-body-md">
+<!-- SideNavBar (Shared Component) -->
+<nav class="hidden md:flex bg-surface-container-low dark:bg-surface-container-low w-[280px] h-full flex-col border-r border-outline-variant z-50">
+<div class="p-md border-b border-outline-variant flex items-center gap-sm">
+<div class="w-10 h-10 rounded-DEFAULT bg-primary-container flex items-center justify-center text-on-primary-container font-headline-md text-headline-md font-bold">
+                SR
+            </div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">System Root</h1>
+<span class="text-on-surface-variant font-code-sm text-code-sm flex items-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-[#4CAF50]"></div> Online
+                </span>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto py-sm">
+<ul class="space-y-xs">
+<li>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:bg-surface-container-highest transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined">home</span>
+                        Home
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-md py-sm border-l-4 border-primary bg-surface-container-high text-primary transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined">chat</span>
+                        Direct Messages
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:bg-surface-container-highest transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined">memory</span>
+                        Rust Dev
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:bg-surface-container-highest transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined">terminal</span>
+                        Linux Kernel
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:bg-surface-container-highest transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined">settings_input_component</span>
+                        SysAdmin
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:bg-surface-container-highest transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined">add</span>
+                        Add Server
+                    </a>
+</li>
+</ul>
+<div class="px-md mt-lg">
+<button class="w-full bg-primary-container text-on-primary-container font-label-caps text-label-caps py-sm px-md rounded-DEFAULT flex items-center justify-center gap-sm hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[16px]">add</span>
+                    New Server
+                </button>
+</div>
+</div>
+<div class="border-t border-outline-variant p-sm">
+<ul class="space-y-xs">
+<li>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:bg-surface-container-highest transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined">settings</span>
+                        Settings
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:bg-surface-container-highest transition-colors duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined">help</span>
+                        Support
+                    </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full bg-surface-dim relative">
+<!-- TopNavBar (Shared Component - Friends Variant) -->
+<header class="flex justify-between items-center w-full px-md bg-surface dark:bg-surface h-16 border-b border-outline-variant flex-shrink-0">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant">group</span>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">Friends</h2>
+</div>
+<div class="flex items-center gap-md">
+<div class="hidden md:flex gap-sm">
+<button class="text-primary border-b-2 border-primary pb-[18px] pt-[18px] px-sm font-label-caps text-label-caps cursor-pointer">Online</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors pb-[18px] pt-[18px] px-sm font-label-caps text-label-caps cursor-pointer">All</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors pb-[18px] pt-[18px] px-sm font-label-caps text-label-caps cursor-pointer">Pending</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors pb-[18px] pt-[18px] px-sm font-label-caps text-label-caps cursor-pointer">Blocked</button>
+</div>
+<div class="flex items-center gap-sm ml-lg">
+<button class="bg-[#1E1E1E] border border-[#333333] hover:border-primary-container text-on-surface-variant px-sm py-xs rounded-DEFAULT font-label-caps text-label-caps flex items-center gap-xs transition-colors">
+                        Add Friend
+                     </button>
+</div>
+</div>
+</header>
+<!-- Friends List Canvas -->
+<div class="flex-1 overflow-y-auto p-lg">
+<!-- Search -->
+<div class="mb-lg max-w-2xl mx-auto">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-[#1E1E1E] border border-[#333333] focus:border-primary-container text-on-surface pl-xl pr-sm py-sm rounded-DEFAULT font-code-sm text-code-sm focus:ring-0 outline-none transition-colors" placeholder="Search friends or add by username..." type="text"/>
+</div>
+</div>
+<div class="max-w-2xl mx-auto">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-sm uppercase">Online - 3</h3>
+<div class="space-y-sm">
+<!-- Friend Item -->
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-highest border-t border-transparent hover:border-outline-variant transition-colors group cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="relative">
+<img class="w-10 h-10 rounded-DEFAULT object-cover border border-[#333333]" data-alt="A futuristic cyberpunk avatar portrait of a character with glowing neon blue cybernetic implants. The lighting is dark and moody, reminiscent of a high-tech underworld, utilizing a deep dark technical color palette with stark contrasts. Rendered in a crisp, hyper-detailed 3D style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtIe5QjmMVk2XURB4Oyvx5NIrRgTDEjofWOCSTHi0Q5lHB1cb9zSkvxJeGzishTgtyrz_QkehYhPTtw88hpv1M9AZPNSdevXtjAVtiKGlai8OcixNtr4MTdRZA5IcOjSGb3wpENWyRof1JNdzspothuXBjRku6WvnxpKuyiewll4wMEks_lEuuwLlRuSYqqEJzCymSFe-V2S4mIw1A-juloTFMyekgTp_1QTR5hG5D_YrqMjQAFijOZCGrU8Ir28AEL1PPbnp392Y"/>
+<div class="absolute -bottom-1 -right-1 w-3 h-3 bg-[#4CAF50] border-2 border-surface-dim rounded-full"></div>
+</div>
+<div>
+<div class="font-body-lg text-body-lg text-on-surface flex items-center gap-xs">
+                                    NeoCoder
+                                    <span class="font-code-sm text-code-sm text-on-surface-variant bg-[#2A2A2A] px-1 rounded-sm border border-[#333333]">kernel-dev</span>
+</div>
+<div class="font-body-md text-body-md text-on-surface-variant truncate w-48">Compiling...</div>
+</div>
+</div>
+<div class="flex items-center gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="w-8 h-8 rounded-full bg-[#2A2A2A] hover:bg-primary-container hover:text-on-primary-container flex items-center justify-center text-on-surface-variant transition-colors border border-[#333333]" title="Message">
+<span class="material-symbols-outlined text-[18px]">chat_bubble</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-[#2A2A2A] hover:bg-primary-container hover:text-on-primary-container flex items-center justify-center text-on-surface-variant transition-colors border border-[#333333]" title="Voice Call">
+<span class="material-symbols-outlined text-[18px]">call</span>
+</button>
+</div>
+</div>
+<!-- Friend Item -->
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-highest border-t border-transparent hover:border-outline-variant transition-colors group cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="relative">
+<img class="w-10 h-10 rounded-DEFAULT object-cover border border-[#333333]" data-alt="A minimalist line-art avatar featuring geometric shapes forming an abstract owl. The background is a stark dark gray, and the lines are a sharp, contrasting off-white. The aesthetic is clean, technical, and precise, aligning perfectly with a modern developer environment's dark mode." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrn0sPR_YmMEBtAev37wnAhOdaHLl9MboL4oQaa0jEAmDhmLjTvv1n21pXNcWtuKrPPtVvAB55fVU3h2JVqpqDRw3wMJzfF5UGVr8h9NovyOHbwvGK24PfftJxv5w0ETADiayeaGczQ0S3mgtg5XrVbtQQdAWtmr0cthn0zkwvIHsirBy90JLwf7IyxQSFeVeXQdudN28BDO5vVV13DST3CMmb1OQX1IRC0v9ovJGdnUA6DEgcrHS587y47ncg2dayw1BogdqyYS4"/>
+<div class="absolute -bottom-1 -right-1 w-3 h-3 bg-[#4CAF50] border-2 border-surface-dim rounded-full"></div>
+</div>
+<div>
+<div class="font-body-lg text-body-lg text-on-surface">VoidWalker</div>
+<div class="font-body-md text-body-md text-on-surface-variant truncate w-48">Listening to Synthwave</div>
+</div>
+</div>
+<div class="flex items-center gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="w-8 h-8 rounded-full bg-[#2A2A2A] hover:bg-primary-container hover:text-on-primary-container flex items-center justify-center text-on-surface-variant transition-colors border border-[#333333]" title="Message">
+<span class="material-symbols-outlined text-[18px]">chat_bubble</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-[#2A2A2A] hover:bg-primary-container hover:text-on-primary-container flex items-center justify-center text-on-surface-variant transition-colors border border-[#333333]" title="Voice Call">
+<span class="material-symbols-outlined text-[18px]">call</span>
+</button>
+</div>
+</div>
+<!-- Friend Item -->
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-highest border-t border-transparent hover:border-outline-variant transition-colors group cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="relative">
+<img class="w-10 h-10 rounded-DEFAULT object-cover border border-[#333333]" data-alt="A digital portrait of a female character with neon orange hair in a bob cut, wearing a dark tactical jacket. The art style is gritty, low-poly 3D graphic. The lighting emphasizes hard shadows and deep blacks, fitting a technical, industrial software interface aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJRP5_HFXO8vWHHyjOEX65HA5Iz2tgBGGapA5JwJvU8Fqmpy0zndHgwcK1ZiX50-l59QabZ7gJe4eGM6hwgn0sFftJ4TaPgBU23EiAKYIbja1beYlO8_h5mHQJWR-SpOa_PWZqmWYUAhvM9QoNaKARbyLlvMtcRtI8ukM0QCGKG9jgZszDJZppkjSvK2WuHQ4JIVQMgLi659VzWUVLA--M0MnSA-l4v6V0Qwvo-Ye8omT5qKac-D9298LbMaoorCi3zIeaVkiN5Hk"/>
+<div class="absolute -bottom-1 -right-1 w-3 h-3 bg-[#FF9800] border-2 border-surface-dim rounded-full"></div>
+</div>
+<div>
+<div class="font-body-lg text-body-lg text-on-surface">SysAdmin_Jane</div>
+<div class="font-body-md text-body-md text-on-surface-variant truncate w-48">Idle (Away)</div>
+</div>
+</div>
+<div class="flex items-center gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="w-8 h-8 rounded-full bg-[#2A2A2A] hover:bg-primary-container hover:text-on-primary-container flex items-center justify-center text-on-surface-variant transition-colors border border-[#333333]" title="Message">
+<span class="material-symbols-outlined text-[18px]">chat_bubble</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-[#2A2A2A] hover:bg-primary-container hover:text-on-primary-container flex items-center justify-center text-on-surface-variant transition-colors border border-[#333333]" title="Voice Call">
+<span class="material-symbols-outlined text-[18px]">call</span>
+</button>
+</div>
+</div>
+</div>
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mt-xl mb-sm uppercase">Offline - 1</h3>
+<div class="space-y-sm">
+<!-- Friend Item Offline -->
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-highest border-t border-transparent hover:border-outline-variant transition-colors group cursor-pointer opacity-60">
+<div class="flex items-center gap-md">
+<div class="relative">
+<img class="w-10 h-10 rounded-DEFAULT object-cover border border-[#333333] grayscale" data-alt="A pixel-art rendition of a classic CRT monitor displaying green text on a black screen. The aesthetic is heavily retro-technical, fitting perfectly into a dark-mode developer environment. Colors are strictly deep blacks and stark neon greens." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCEVEHozYTAOhujx-rGX9VT5im7IMf-rvbr7hdVtCznZLQN7vA_kPSFgN3qrgsnrSHEMqC7xpVH4Ld0Xz8bvvz-Wr9dThq0W_XNThVIEujiH24ppOByMNDlk_5vsT4r4Uvs0F4dPRk7Yt4nUEuQXAFYWyMUnk6RczMMb7L0TrCqm-9KqvbnQvzpdk32wi7kBS9g-FYvyAzmv0A2xQTa1rUMnwI3en0S3u_keWxR-2IinzYneOO935oz0ofvNAznXLTbxYnSi5WZAs"/>
+<div class="absolute -bottom-1 -right-1 w-3 h-3 bg-surface-container-high border-2 border-surface-dim rounded-full"></div>
+</div>
+<div>
+<div class="font-body-lg text-body-lg text-on-surface">RetroDev</div>
+<div class="font-body-md text-body-md text-on-surface-variant truncate w-48">Last seen 2 hours ago</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
