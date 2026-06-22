@@ -140,10 +140,15 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "voice-pulse": {
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(76, 175, 80, 0.4)" },
+          "50%": { boxShadow: "0 0 0 6px rgba(76, 175, 80, 0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "voice-pulse": "voice-pulse 1.5s ease-in-out infinite",
       },
     },
   },

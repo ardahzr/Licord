@@ -3,6 +3,9 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { ChatPage } from "@/pages/ChatPage";
 import { FriendsPage } from "@/pages/FriendsPage";
+import { VoiceRoomPage } from "@/pages/VoiceRoomPage";
+import { DirectCallPage } from "@/pages/DirectCallPage";
+import { GroupChatPage } from "@/pages/GroupChatPage";
 import { AuthPage } from "@/pages/AuthPage";
 
 /**
@@ -18,6 +21,9 @@ export default function App() {
           <Route element={<AppLayout />}>
             <Route index element={<ChatPage />} />
             <Route path="channels/:channelId" element={<ChatPage />} />
+            <Route path="voice/:channelId" element={<VoiceRoomPage />} />
+            <Route path="call/:roomId" element={<DirectCallPage />} />
+            <Route path="dms/:groupId" element={<GroupChatPage />} />
             <Route path="friends" element={<FriendsPage />} />
           </Route>
         </Route>

@@ -38,5 +38,13 @@ export default defineConfig(async () => ({
     target: "es2021",
     minify: "esbuild",
     sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          livekit: ["livekit-client", "@livekit/components-react"],
+          supabase: ["@supabase/supabase-js"],
+        },
+      },
+    },
   },
 }));

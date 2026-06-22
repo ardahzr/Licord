@@ -51,17 +51,26 @@ interface UseMessages {
   sendMessage: (content: string, mediaUrl?: string) => Promise<void>;
 }
 
+export type MessageTargetType = "channel" | "group";
+
+function targetColumn(type: MessageTargetType) {
+  return type === "group" ? "group_chat_id" : "channel_id";
+}
+
 /**
  * Loads a channel's history and keeps it live via a Realtime postgres_changes
  * subscription. The sender's own insert also arrives over Realtime, so we treat
  * the subscription as the single source of truth (deduping by id).
  */
-export function useMessages(channelId: string | null): UseMessages {
+export function useMessages(
+  targetId: string | null,
+  targetType: MessageTargetType = "channel",
+): UseMessages {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const channelIdRef = useRef(channelId);
-  channelIdRef.current = channelId;
+  const targetRef = useRef(`${targetType}:${targetId ?? ""}`);
+  targetRef.current = `${targetType}:${targetId ?? ""}`;
 
   const appendMessage = useCallback((msg: ChatMessage) => {
     setMessages((prev) =>
@@ -70,21 +79,23 @@ export function useMessages(channelId: string | null): UseMessages {
   }, []);
 
   useEffect(() => {
-    if (!channelId || !isSupabaseConfigured()) {
+    if (!targetId || !isSupabaseConfigured()) {
       setMessages([]);
+      setError(null);
       setLoading(false);
       return;
     }
 
     let active = true;
     setLoading(true);
+    setError(null);
     setMessages([]);
 
     // 1) Initial history (joined with sender profile).
     supabase
       .from("messages")
       .select(MESSAGE_SELECT)
-      .eq("channel_id", channelId)
+      .eq(targetColumn(targetType), targetId)
       .order("created_at", { ascending: true })
       .limit(100)
       .then(({ data, error }) => {
@@ -98,53 +109,87 @@ export function useMessages(channelId: string | null): UseMessages {
           for (const r of rows) {
             if (r.sender) senderCache.set(r.sender_id, r.sender);
           }
-          setMessages(rows.map((r) => toChatMessage(r, r.sender)));
+          const history = rows.map((r) => toChatMessage(r, r.sender));
+          // Do not overwrite inserts that arrived while history was loading.
+          setMessages((current) => {
+            const merged = new Map(
+              history.map((message) => [message.id, message]),
+            );
+            for (const message of current) merged.set(message.id, message);
+            return [...merged.values()].sort(
+              (a, b) => Date.parse(a.created_at) - Date.parse(b.created_at),
+            );
+          });
         }
         setLoading(false);
       });
 
     // 2) Live inserts for this channel.
     const channel = supabase
-      .channel(`messages:${channelId}`)
+      .channel(`messages:${targetType}:${targetId}`)
       .on(
         "postgres_changes",
         {
           event: "INSERT",
           schema: "public",
           table: "messages",
-          filter: `channel_id=eq.${channelId}`,
+          filter: `${targetColumn(targetType)}=eq.${targetId}`,
         },
         async (payload: RealtimePostgresInsertPayload<Message>) => {
           const row = payload.new;
-          if (channelIdRef.current !== row.channel_id) return;
+          const rowTarget =
+            targetType === "group" ? row.group_chat_id : row.channel_id;
+          if (targetRef.current !== `${targetType}:${rowTarget ?? ""}`) return;
           const sender = await resolveSender(row.sender_id);
           if (active) appendMessage(toChatMessage(row, sender));
         },
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (!active) return;
+        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+          setError("Realtime connection failed. New messages may be delayed.");
+        }
+      });
 
     return () => {
       active = false;
       supabase.removeChannel(channel);
     };
-  }, [channelId, appendMessage]);
+  }, [targetId, targetType, appendMessage]);
 
   const sendMessage = useCallback(
     async (content: string, mediaUrl?: string) => {
       const trimmed = content.trim();
       const { data: auth } = await supabase.auth.getUser();
       const userId = auth.user?.id;
-      if ((!trimmed && !mediaUrl) || !channelId || !userId) return;
+      if ((!trimmed && !mediaUrl) || !targetId || !userId) return;
 
-      const { error } = await supabase.from("messages").insert({
-        channel_id: channelId,
-        sender_id: userId,
-        content: trimmed,
-        media_url: mediaUrl ?? null,
-      });
-      if (error) setError(error.message);
+      const target =
+        targetType === "group"
+          ? { group_chat_id: targetId }
+          : { channel_id: targetId };
+
+      const { data, error: insertError } = await supabase
+        .from("messages")
+        .insert({
+          ...target,
+          sender_id: userId,
+          content: trimmed,
+          media_url: mediaUrl ?? null,
+        })
+        .select(
+          "id, channel_id, friend_id, group_chat_id, sender_id, content, media_url, created_at",
+        )
+        .single();
+      if (insertError) {
+        setError(insertError.message);
+        throw new Error(insertError.message);
+      }
+      const sender = await resolveSender(userId);
+      appendMessage(toChatMessage(data as Message, sender));
+      setError(null);
     },
-    [channelId],
+    [targetId, targetType, appendMessage],
   );
 
   return { messages, loading, error, sendMessage };

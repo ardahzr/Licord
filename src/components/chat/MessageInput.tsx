@@ -29,8 +29,14 @@ export function MessageInput({
     if (!content || sending) return;
     setValue("");
     setSending(true);
+    setError(null);
     try {
       await onSend(content);
+    } catch (err) {
+      setValue(content);
+      setError(
+        err instanceof Error ? err.message : "Message could not be sent.",
+      );
     } finally {
       setSending(false);
     }
@@ -105,7 +111,9 @@ export function MessageInput({
         <div className="flex items-center pr-sm space-x-1 flex-shrink-0">
           <button
             aria-label="Emoji"
-            className="p-xs text-on-surface-variant hover:text-primary transition-colors cursor-pointer flex items-center justify-center"
+            title="Emoji picker is not available yet"
+            disabled
+            className="p-xs text-on-surface-variant transition-colors cursor-not-allowed opacity-40 flex items-center justify-center"
           >
             <Smile className="w-5 h-5" />
           </button>

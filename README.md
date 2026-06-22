@@ -24,7 +24,8 @@ rust-orange primary (`#ff7043`), Inter + JetBrains Mono. Dark mode only.
 
 ```bash
 # Node + pnpm + Rust toolchain
-sudo pacman -S nodejs pnpm rustup webkit2gtk-4.1 libsoup3 base-devel
+sudo pacman -S nodejs pnpm rustup webkit2gtk-4.1 libsoup3 base-devel \
+  gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly
 rustup default stable
 ```
 
@@ -100,3 +101,21 @@ The R2 **secret** access key must never ship in a `VITE_` variable — everythin
 Function that hands back a short-lived presigned URL, keeping the secret
 server-side. The `VITE_R2_*` secret keys in `.env.example` are for local
 prototyping only and are git-ignored.
+
+## Friends, servers, and voice setup
+
+The current UI uses real Supabase friend requests, server memberships, text
+channels, and voice channels. After pulling these changes, run the complete
+[`supabase/schema.sql`](supabase/schema.sql) once in Supabase Dashboard → SQL
+Editor. The script is idempotent and creates the required RPCs and Realtime
+publications.
+
+Voice rooms also require the token function to be deployed after changes:
+
+```bash
+supabase functions deploy livekit-token --no-verify-jwt
+```
+
+The function validates the user's session and server/friend membership before
+issuing a LiveKit room token. `VITE_LIVEKIT_URL`, `LIVEKIT_API_KEY`, and
+`LIVEKIT_API_SECRET` must already point to the same LiveKit server.

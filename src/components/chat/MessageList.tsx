@@ -3,14 +3,23 @@ import { History, Loader2 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { initials } from "@/lib/utils";
 import type { ChatMessage } from "@/hooks/useMessages";
+import { MediaAttachment } from "@/components/chat/MediaAttachment";
 
 interface MessageListProps {
   channelName: string;
   messages: ChatMessage[];
   loading: boolean;
+  searching?: boolean;
+  conversation?: boolean;
 }
 
-const VIDEO_EXT = /\.(mp4|webm|ogg|ogv|mov|m4v)(\?|$)/i;
+const MEDIA_URL = /^https:\/\/[^\s]+\.(?:png|jpe?g|webp|gif|svg|mp4|webm|ogg|ogv|mov|m4v)(?:\?[^\s]*)?$/i;
+
+function messageMedia(msg: ChatMessage): string | null {
+  if (msg.media_url) return msg.media_url;
+  const content = msg.content.trim();
+  return MEDIA_URL.test(content) ? content : null;
+}
 
 function formatTime(iso: string): string {
   const d = new Date(iso);
@@ -24,7 +33,13 @@ function formatTime(iso: string): string {
  * Scrollable message stream ("stream" layout, no bubbles). Auto-scrolls to the
  * newest message as Realtime delivers inserts.
  */
-export function MessageList({ channelName, messages, loading }: MessageListProps) {
+export function MessageList({
+  channelName,
+  messages,
+  loading,
+  searching = false,
+  conversation = false,
+}: MessageListProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,7 +53,8 @@ export function MessageList({ channelName, messages, loading }: MessageListProps
         <div className="text-on-surface-variant">
           <History className="w-8 h-8 mb-sm block" />
           Welcome to the start of the{" "}
-          <strong className="text-primary">{channelName}</strong> channel.
+          <strong className="text-primary">{channelName}</strong>{" "}
+          {conversation ? "conversation" : "channel"}.
         </div>
       </div>
 
@@ -47,8 +63,15 @@ export function MessageList({ channelName, messages, loading }: MessageListProps
           <Loader2 className="w-4 h-4 animate-spin" />
           Loading messages…
         </div>
+      ) : messages.length === 0 && searching ? (
+        <div className="py-md text-on-surface-variant">
+          No matching messages.
+        </div>
       ) : (
-        messages.map((msg) => (
+        messages.map((msg) => {
+          const mediaUrl = messageMedia(msg);
+          const contentIsMediaUrl = mediaUrl === msg.content.trim();
+          return (
           <div
             key={msg.id}
             className="flex group hover:bg-surface-container-low transition-colors p-unit -mx-unit"
@@ -68,35 +91,16 @@ export function MessageList({ channelName, messages, loading }: MessageListProps
                   {formatTime(msg.created_at)}
                 </span>
               </div>
-              {msg.content && (
+              {msg.content && !contentIsMediaUrl && (
                 <div className="text-on-surface whitespace-pre-wrap leading-relaxed">
                   {msg.content}
                 </div>
               )}
-              {msg.media_url &&
-                (VIDEO_EXT.test(msg.media_url) ? (
-                  <video
-                    src={msg.media_url}
-                    controls
-                    className="mt-sm max-h-80 rounded border border-outline-variant"
-                  />
-                ) : (
-                  <a
-                    href={msg.media_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-block mt-sm"
-                  >
-                    <img
-                      src={msg.media_url}
-                      alt="attachment"
-                      className="max-h-80 rounded border border-outline-variant object-contain"
-                    />
-                  </a>
-                ))}
+              {mediaUrl && <MediaAttachment url={mediaUrl} />}
             </div>
           </div>
-        ))
+          );
+        })
       )}
       <div ref={bottomRef} />
     </main>

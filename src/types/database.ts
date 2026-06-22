@@ -7,6 +7,7 @@
 export type PresenceStatus = "online" | "away" | "busy" | "offline";
 export type FriendStatus = "pending" | "accepted" | "blocked";
 export type ChannelType = "text" | "voice";
+export type ServerRole = "owner" | "admin" | "member";
 
 export interface User {
   id: string; // UUID (auth.users.id)
@@ -28,8 +29,15 @@ export interface Server {
   id: string;
   name: string;
   icon_url: string | null;
-  owner_id: string;
+  owner_id: string | null;
   created_at: string;
+}
+
+export interface ServerMember {
+  server_id: string;
+  user_id: string;
+  role: ServerRole;
+  joined_at: string;
 }
 
 export interface Channel {
@@ -40,10 +48,25 @@ export interface Channel {
   created_at: string;
 }
 
+export interface GroupChat {
+  id: string;
+  name: string | null;
+  icon_url: string | null;
+  owner_id: string;
+  created_at: string;
+}
+
+export interface GroupChatMember {
+  group_chat_id: string;
+  user_id: string;
+  joined_at: string;
+}
+
 export interface Message {
   id: string;
   channel_id: string | null; // set for server-channel messages
   friend_id: string | null; // set for DM threads
+  group_chat_id: string | null; // set for private group conversations
   sender_id: string;
   content: string;
   media_url: string | null; // R2 link (Phase 3)

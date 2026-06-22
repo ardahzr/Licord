@@ -44,8 +44,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
+    supabase.auth.getSession().then(async ({ data }) => {
+      if (!data.session) {
+        setSession(null);
+        setLoading(false);
+        return;
+      }
+
+      // Do not admit a stale persisted session into the app shell. Supabase
+      // validates it and refreshes when possible; otherwise we clear it locally.
+      const { error } = await supabase.auth.getUser();
+      if (error) {
+        const { data: refreshed, error: refreshError } =
+          await supabase.auth.refreshSession();
+        if (refreshError || !refreshed.session) {
+          await supabase.auth.signOut({ scope: "local" });
+          setSession(null);
+          setLoading(false);
+          return;
+        }
+        setSession(refreshed.session);
+      } else {
+        setSession(data.session);
+      }
       setLoading(false);
     });
 
