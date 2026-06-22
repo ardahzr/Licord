@@ -17,5 +17,5 @@ export function VoiceRoomPage() {
   const channel = voiceChannels.find((c) => c.id === channelId);
   if (!channel) return <Navigate to="/" replace />;
 
-  return <VoiceRoom channelId={channel.id} channelName={channel.name} />;
+  return <VoiceRoom key={channel.id} channelId={channel.id} channelName={channel.name} />;
 }

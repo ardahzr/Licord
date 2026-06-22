@@ -9,6 +9,7 @@ export function DirectCallPage() {
   const friendName = params.get("name")?.slice(0, 32) || "Friend Call";
   return (
     <VoiceRoom
+      key={roomId}
       channelId={`direct-${roomId}`}
       channelName={`Call with ${friendName}`}
       directCall

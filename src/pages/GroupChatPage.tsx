@@ -1,17 +1,29 @@
-import { useState } from "react";
-import { Navigate, useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Navigate, useOutletContext, useParams } from "react-router-dom";
 import { Loader2, Users } from "lucide-react";
 import { ChatArea } from "@/components/chat/ChatArea";
 import { Avatar } from "@/components/ui/avatar";
 import type { AppOutletContext } from "@/components/layout/AppLayout";
 import { initials } from "@/lib/utils";
+import { GroupCallStage } from "@/components/voice/GroupCallStage";
+import { useAppStore } from "@/store/useAppStore";
 
 /** Discord-like private group DM with a collapsible member list and voice call. */
 export function GroupChatPage() {
   const { groupId } = useParams();
-  const navigate = useNavigate();
   const { groupChats } = useOutletContext<AppOutletContext>();
   const [membersOpen, setMembersOpen] = useState(true);
+  const activeVoiceChannelId = useAppStore((state) => state.activeVoiceChannelId);
+  const currentCallId = groupId ? `direct-group-${groupId}` : null;
+  const [callOpen, setCallOpen] = useState(
+    Boolean(currentCallId && activeVoiceChannelId === currentCallId),
+  );
+
+  useEffect(() => {
+    if (currentCallId && activeVoiceChannelId === currentCallId) {
+      setCallOpen(true);
+    }
+  }, [activeVoiceChannelId, currentCallId]);
 
   if (groupChats.loading) {
     return (
@@ -31,13 +43,15 @@ export function GroupChatPage() {
         channelName={group.displayName}
         targetType="group"
         group
+        headerAddon={
+          callOpen ? (
+            <GroupCallStage group={group} onClose={() => setCallOpen(false)} />
+          ) : undefined
+        }
+        voiceStageOpen={callOpen}
         membersOpen={membersOpen}
         onToggleMembers={() => setMembersOpen((current) => !current)}
-        onStartCall={() =>
-          navigate(
-            `/call/group-${group.id}?name=${encodeURIComponent(group.displayName)}`,
-          )
-        }
+        onStartCall={() => setCallOpen(true)}
       />
       {membersOpen && (
         <aside className="hidden h-full w-60 shrink-0 border-l border-outline-variant bg-surface-container-low lg:flex lg:flex-col">

@@ -16,6 +16,8 @@ interface ChatAreaProps {
   onStartCall?: () => void;
   onToggleMembers?: () => void;
   membersOpen?: boolean;
+  headerAddon?: React.ReactNode;
+  voiceStageOpen?: boolean;
 }
 
 /** Middle column: header + live message stream + composer for one channel. */
@@ -27,6 +29,8 @@ export function ChatArea({
   onStartCall,
   onToggleMembers,
   membersOpen = false,
+  headerAddon,
+  voiceStageOpen = false,
 }: ChatAreaProps) {
   const navigate = useNavigate();
   const { messages, loading, error, sendMessage } = useMessages(
@@ -84,7 +88,8 @@ export function ChatArea({
         onToggleMembers={onToggleMembers}
         membersOpen={membersOpen}
       />
-      {hasBackgroundCall && (
+      {headerAddon}
+      {hasBackgroundCall && !voiceStageOpen && (
         <button
           type="button"
           onClick={() => activeVoicePath && navigate(activeVoicePath)}

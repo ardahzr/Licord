@@ -108,24 +108,30 @@ pub async fn native_voice_connect(
         return Err("No speaker/output device was found".to_string());
     }
 
-    let (room, mut events) = Room::connect(&url, &token, RoomOptions::default())
-        .await
-        .map_err(|error| format!("Native LiveKit connection failed: {error}"))?;
+    let (room, mut events) = tokio::time::timeout(
+        std::time::Duration::from_secs(15),
+        Room::connect(&url, &token, RoomOptions::default()),
+    )
+    .await
+    .map_err(|_| "Native LiveKit connection timed out".to_string())?
+    .map_err(|error| format!("Native LiveKit connection failed: {error}"))?;
 
     // The platform source captures the selected Linux microphone. PlatformAudio
     // also routes subscribed remote audio tracks to the selected speaker.
     let track = LocalAudioTrack::create_audio_track("microphone", audio.rtc_source());
-    let publication = room
-        .local_participant()
-        .publish_track(
+    let publication = tokio::time::timeout(
+        std::time::Duration::from_secs(10),
+        room.local_participant().publish_track(
             LocalTrack::Audio(track),
             TrackPublishOptions {
                 source: TrackSource::Microphone,
                 ..Default::default()
             },
-        )
-        .await
-        .map_err(|error| format!("Microphone publish failed: {error}"))?;
+        ),
+    )
+    .await
+    .map_err(|_| "Microphone publish timed out".to_string())?
+    .map_err(|error| format!("Microphone publish failed: {error}"))?;
 
     // Room events must be drained so the SDK can keep delivering participant
     // and track changes. Status is exposed to React through a lightweight poll.

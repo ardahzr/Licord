@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { ConnectionState } from "livekit-client";
 import { Volume2, WifiOff, Loader2, ShieldCheck } from "lucide-react";
 import { useVoiceRoom } from "@/hooks/useVoiceRoom";
@@ -8,6 +9,7 @@ import {
 } from "@/components/voice/ParticipantTile";
 import { Button } from "@/components/ui/button";
 import { isLiveKitConfigured } from "@/lib/livekit";
+import { useAppStore } from "@/store/useAppStore";
 
 interface VoiceRoomProps {
   channelId: string;
@@ -27,6 +29,8 @@ export function VoiceRoom({
   channelName,
   directCall = false,
 }: VoiceRoomProps) {
+  const autoJoinAttempted = useRef(false);
+  const [autoJoining, setAutoJoining] = useState(true);
   const {
     state,
     participants,
@@ -41,6 +45,34 @@ export function VoiceRoom({
     isScreenSharing,
     error,
   } = useVoiceRoom(channelId, channelName);
+  const stateRef = useRef(state);
+  stateRef.current = state;
+
+  // Opening a voice route is itself the intent to join. Keep the lobby only as
+  // an error/retry state instead of requiring an extra confirmation click.
+  useEffect(() => {
+    if (autoJoinAttempted.current) return;
+    let cancelled = false;
+    const restoringCurrentCall =
+      useAppStore.getState().activeVoiceChannelId === channelId;
+    const timer = window.setTimeout(() => {
+      // Set this inside the timer: React StrictMode mounts, cleans up, then
+      // mounts effects again in development. Setting it before the timer made
+      // the second mount skip connecting forever.
+      autoJoinAttempted.current = true;
+      if (stateRef.current !== ConnectionState.Disconnected) {
+        setAutoJoining(false);
+        return;
+      }
+      void connect().finally(() => {
+        if (!cancelled) setAutoJoining(false);
+      });
+    }, restoringCurrentCall ? 400 : 100);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [connect]);
 
   // ── Not configured ──
   if (!isLiveKitConfigured()) {
@@ -59,7 +91,7 @@ export function VoiceRoom({
   }
 
   // ── Disconnected lobby ──
-  if (state === ConnectionState.Disconnected) {
+  if (state === ConnectionState.Disconnected && !autoJoining) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center bg-surface p-lg text-center">
         <div className="w-24 h-24 mb-lg flex items-center justify-center rounded-full bg-primary/10 border-2 border-primary/30">
@@ -86,7 +118,11 @@ export function VoiceRoom({
   }
 
   // ── Connecting ──
-  if (state === ConnectionState.Connecting || state === ConnectionState.Reconnecting) {
+  if (
+    autoJoining ||
+    state === ConnectionState.Connecting ||
+    state === ConnectionState.Reconnecting
+  ) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center bg-surface p-lg">
         <Loader2 className="w-10 h-10 text-primary animate-spin mb-md" />

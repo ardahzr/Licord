@@ -24,6 +24,24 @@ import { useAppStore } from "@/store/useAppStore";
 // room alive while React routes between chat, friends and the call screen.
 let persistentRoom: Room | null = null;
 
+async function withTimeout<T>(
+  promise: Promise<T>,
+  milliseconds: number,
+  message: string,
+): Promise<T> {
+  let timer = 0;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<never>((_, reject) => {
+        timer = window.setTimeout(() => reject(new Error(message)), milliseconds);
+      }),
+    ]);
+  } finally {
+    window.clearTimeout(timer);
+  }
+}
+
 // ── Public types ────────────────────────────────────────────────────
 export interface VoiceParticipant {
   identity: string;
@@ -179,7 +197,11 @@ export function useVoiceRoom(channelId: string, channelName: string): UseVoiceRo
     try {
       setError(null);
       const displayName = profile?.username ?? session.user.id;
-      const token = await fetchLiveKitToken(channelId, displayName);
+      const token = await withTimeout(
+        fetchLiveKitToken(channelId, displayName),
+        15_000,
+        "LiveKit token request timed out. Please try again.",
+      );
 
       if (nativeVoice) {
         setState(ConnectionState.Connecting);
