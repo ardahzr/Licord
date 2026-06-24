@@ -1,8 +1,8 @@
 # Maintainer: libuntu <libuntu@users.noreply.github.com>
 pkgname=licord
 pkgver=0.1.0
-pkgrel=1
-pkgdesc="A fast, native, resource-efficient communication client for Arch Linux / CachyOS (Better-VC)"
+pkgrel=2
+pkgdesc="Hosted Discord-inspired native chat for Arch Linux / CachyOS"
 arch=('x86_64')
 url="https://github.com/ardahzr/Licord"
 license=('MIT')

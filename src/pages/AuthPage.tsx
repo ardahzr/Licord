@@ -33,7 +33,7 @@ export function AuthPage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!configured) {
-      setError("Supabase is not configured. Set VITE_SUPABASE_* in .env.");
+      setError("Licord service is not configured or not reachable.");
       return;
     }
     setError(null);

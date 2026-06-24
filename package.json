@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Better-VC — lightweight native Discord alternative for Arch Linux / CachyOS",
+  "description": "Licord — hosted Discord-inspired native chat for Arch Linux, CachyOS and Windows",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

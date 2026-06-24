@@ -1,7 +1,7 @@
 pkgbase = licord
-	pkgdesc = A fast, native, resource-efficient communication client for Arch Linux / CachyOS (Better-VC)
+	pkgdesc = Hosted Discord-inspired native chat for Arch Linux / CachyOS
 	pkgver = 0.1.0
-	pkgrel = 1
+	pkgrel = 2
 	url = https://github.com/ardahzr/Licord
 	arch = x86_64
 	license = MIT

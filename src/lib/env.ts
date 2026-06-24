@@ -1,28 +1,36 @@
+import { officialService } from "@/lib/officialService";
+
 /**
- * Centralized, validated access to `import.meta.env.VITE_*`.
+ * Centralized access to public Licord service configuration.
  *
- * Reading env through this module (instead of scattering `import.meta.env`
- * everywhere) gives one place to validate config and surface a clear error
- * when something is missing.
+ * Official builds connect to the hosted Licord service by default. Developers
+ * can still override these public endpoints with VITE_* variables in `.env`
+ * when testing a self-hosted backend.
  */
 
 function read(key: keyof ImportMetaEnv): string {
   return import.meta.env[key] ?? "";
 }
 
+const configuredOrOfficial = (value: string, fallback: string): string =>
+  value.trim() || fallback;
+
 export const env = {
   supabase: {
-    url: read("VITE_SUPABASE_URL"),
+    url: configuredOrOfficial(read("VITE_SUPABASE_URL"), officialService.supabase.url),
     // New Supabase key naming: `sb_publishable_...` (client-safe, replaces anon JWT).
-    publishableKey: read("VITE_SUPABASE_PUBLISHABLE_KEY"),
+    publishableKey: configuredOrOfficial(
+      read("VITE_SUPABASE_PUBLISHABLE_KEY"),
+      officialService.supabase.publishableKey,
+    ),
   },
   r2: {
-    publicUrl: read("VITE_R2_PUBLIC_URL"),
-    bucket: read("VITE_R2_BUCKET_NAME"),
-    endpoint: read("VITE_R2_ENDPOINT"),
+    publicUrl: configuredOrOfficial(read("VITE_R2_PUBLIC_URL"), officialService.r2.publicUrl),
+    bucket: configuredOrOfficial(read("VITE_R2_BUCKET_NAME"), officialService.r2.bucket),
+    endpoint: configuredOrOfficial(read("VITE_R2_ENDPOINT"), officialService.r2.endpoint),
   },
   livekit: {
-    url: read("VITE_LIVEKIT_URL"),
+    url: configuredOrOfficial(read("VITE_LIVEKIT_URL"), officialService.livekit.url),
   },
 } as const;
 

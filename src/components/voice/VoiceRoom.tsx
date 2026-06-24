@@ -85,8 +85,8 @@ export function VoiceRoom({
           Voice Not Available
         </h3>
         <p className="font-code-sm text-code-sm max-w-md">
-          LiveKit is not configured. Set <code>VITE_LIVEKIT_URL</code> in your{" "}
-          <code>.env</code> file and deploy the LiveKit server.
+          LiveKit is not reachable right now. Check your network connection or
+          the Licord voice service status.
         </p>
       </div>
     );

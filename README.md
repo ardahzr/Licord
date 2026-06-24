@@ -1,11 +1,12 @@
 # Licord
 
-Native, fast, Discord-inspired chat for Arch Linux, CachyOS, and Windows.
+Native, fast, Discord-inspired chat for Arch Linux, CachyOS, and Windows — with
+the hosted Licord service included.
 
 Licord is a lightweight community and group-chat app built with Tauri + Rust
-instead of Electron. It keeps the Discord-like flow people already know:
-servers, direct messages, group DMs, media sharing, voice calls, screen sharing,
-and synchronized YouTube watch rooms — with a smaller native footprint.
+instead of Electron. Install it, sign in, and it connects to the official Licord
+service automatically. No server setup, database setup, or local configuration is
+needed for normal users.
 
 ## Why Licord?
 
@@ -17,6 +18,7 @@ and synchronized YouTube watch rooms — with a smaller native footprint.
 - Media uploads for images/videos/files through secure presigned upload URLs.
 - Synchronized YouTube co-watch panel for channels and group DMs.
 - Dark “Carbon & Rust” UI designed for Linux desktops.
+- Hosted Licord backend included in official builds.
 
 ## Install
 
@@ -57,9 +59,13 @@ https://github.com/ardahzr/Licord/releases/tag/v0.1.0
 
 ## Backend and privacy model
 
-Official Licord builds connect to the Licord backend for auth, realtime chat,
-media, and voice-room tokens. That is expected: users who install the official
-release use the same app service.
+Official Licord builds automatically connect to the Licord service for auth,
+realtime chat, media, and voice-room tokens. That is the product model: Licord
+is a desktop client plus hosted service, similar to how Discord users connect to
+Discord's infrastructure after installing the app.
+
+Users do not need to create their own Supabase, R2, or LiveKit projects. The app
+ships with public official-service endpoints baked in.
 
 The public repository does not include private server credentials. Client apps
 can contain public configuration such as:
@@ -125,9 +131,11 @@ sudo pacman -S --needed lld
 pnpm package:windows:cross
 ```
 
-## Self-hosting / backend setup
+## Advanced: self-hosting / backend override
 
-If you want to run your own backend instead of the official Licord service:
+Licord is designed to use the official hosted service by default. If you are a
+developer and want to run your own backend instead, override the public service
+config with `.env`:
 
 1. Create a Supabase project.
 2. Run [`supabase/schema.sql`](supabase/schema.sql).
