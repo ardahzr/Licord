@@ -17,6 +17,24 @@ fn app_version() -> String {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .setup(|app| {
+            #[cfg(target_os = "linux")]
+            {
+                use tauri::Manager;
+                if let Some(main_window) = app.get_webview_window("main") {
+                    let _ = main_window.with_webview(|webview| {
+                        use webkit2gtk::SettingsExt;
+                        use webkit2gtk::WebViewExt;
+                        let webkit_webview = webview.inner();
+                        if let Some(settings) = webkit_webview.settings() {
+                            settings.set_enable_webrtc(true);
+                            settings.set_enable_media_stream(true);
+                        }
+                    });
+                }
+            }
+            Ok(())
+        })
         .manage(native_voice::NativeVoiceState::default())
         .invoke_handler(tauri::generate_handler![
             app_version,
@@ -24,6 +42,11 @@ pub fn run() {
             native_voice::native_voice_status,
             native_voice::native_voice_set_muted,
             native_voice::native_voice_set_deafened,
+            native_voice::native_voice_start_camera,
+            native_voice::native_voice_stop_camera,
+            native_voice::native_voice_start_screen_share,
+            native_voice::native_voice_stop_screen_share,
+            native_voice::native_voice_screen_frame,
             native_voice::native_voice_disconnect,
             media::fetch_r2_media,
         ])

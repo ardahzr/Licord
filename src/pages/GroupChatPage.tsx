@@ -7,6 +7,7 @@ import type { AppOutletContext } from "@/components/layout/AppLayout";
 import { initials } from "@/lib/utils";
 import { GroupCallStage } from "@/components/voice/GroupCallStage";
 import { useAppStore } from "@/store/useAppStore";
+import { CoWatchPanel } from "@/components/cowatch/CoWatchPanel";
 
 /** Discord-like private group DM with a collapsible member list and voice call. */
 export function GroupChatPage() {
@@ -14,6 +15,7 @@ export function GroupChatPage() {
   const { groupChats } = useOutletContext<AppOutletContext>();
   const [membersOpen, setMembersOpen] = useState(true);
   const activeVoiceChannelId = useAppStore((state) => state.activeVoiceChannelId);
+  const rightPanelOpen = useAppStore((state) => state.rightPanelOpen);
   const currentCallId = groupId ? `direct-group-${groupId}` : null;
   const [callOpen, setCallOpen] = useState(
     Boolean(currentCallId && activeVoiceChannelId === currentCallId),
@@ -53,7 +55,7 @@ export function GroupChatPage() {
         onToggleMembers={() => setMembersOpen((current) => !current)}
         onStartCall={() => setCallOpen(true)}
       />
-      {membersOpen && (
+      {membersOpen && !rightPanelOpen && (
         <aside className="hidden h-full w-60 shrink-0 border-l border-outline-variant bg-surface-container-low lg:flex lg:flex-col">
           <div className="flex h-16 shrink-0 items-center border-b border-outline-variant px-md">
             <Users className="mr-sm h-5 w-5 text-on-surface-variant" />
@@ -87,6 +89,7 @@ export function GroupChatPage() {
           </div>
         </aside>
       )}
+      {rightPanelOpen && <CoWatchPanel roomId={`group:${group.id}`} />}
     </>
   );
 }

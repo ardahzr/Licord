@@ -9,8 +9,12 @@ import {
   PhoneOff,
   Settings,
   Users,
+  Video,
+  VideoOff,
 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
+import { NativeScreenShareTile, ParticipantTile, ScreenShareTile } from "@/components/voice/ParticipantTile";
+import { ScreenShareButton } from "@/components/voice/ScreenShareButton";
 import {
   setActiveVoiceDeafened,
   useVoiceRoom,
@@ -31,10 +35,16 @@ export function GroupCallStage({ group, onClose }: GroupCallStageProps) {
   const {
     state,
     participants,
+    screenSharer,
     connect,
     disconnect,
     toggleMic,
+    toggleCamera,
+    toggleScreenShare,
     isMicMuted,
+    isCameraOff,
+    isScreenSharing,
+    nativeVoice,
     error,
   } = useVoiceRoom(roomId, `Call with ${group.displayName}`);
   const deafened = useAppStore((current) => current.isDeafened);
@@ -118,6 +128,29 @@ export function GroupCallStage({ group, onClose }: GroupCallStageProps) {
         )}
       </div>
 
+      {participants.some((participant) => !participant.isCameraOff) && (
+        <div className="mb-md flex gap-sm overflow-x-auto pb-xs">
+          {participants.map((participant) => (
+            <div key={participant.identity} className="w-56 shrink-0">
+              <ParticipantTile
+                participant={participant}
+                nativeVoice={nativeVoice}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {screenSharer && (
+        <div className="mb-md max-h-[48vh] overflow-hidden">
+          {nativeVoice ? (
+            <NativeScreenShareTile participant={screenSharer} />
+          ) : (
+            <ScreenShareTile participant={screenSharer} />
+          )}
+        </div>
+      )}
+
       <div className="mt-md flex items-center justify-center gap-sm">
         <CallButton
           label={isMicMuted ? "Unmute" : "Mute"}
@@ -126,6 +159,18 @@ export function GroupCallStage({ group, onClose }: GroupCallStageProps) {
         >
           {isMicMuted ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
         </CallButton>
+        <CallButton
+          label={isCameraOff ? "Turn on camera" : "Turn off camera"}
+          active={!isCameraOff}
+          onClick={() => void toggleCamera()}
+        >
+          {isCameraOff ? <VideoOff className="h-4 w-4" /> : <Video className="h-4 w-4" />}
+        </CallButton>
+        <ScreenShareButton
+          sharing={isScreenSharing}
+          onToggle={() => void toggleScreenShare()}
+          compact
+        />
         <button
           type="button"
           onClick={leave}

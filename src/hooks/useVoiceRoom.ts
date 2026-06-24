@@ -15,6 +15,10 @@ import {
   getNativeVoiceStatus,
   setNativeVoiceDeafened,
   setNativeVoiceMuted,
+  startNativeCamera,
+  startNativeScreenShare,
+  stopNativeCamera,
+  stopNativeScreenShare,
   type NativeVoiceStatus,
 } from "@/lib/nativeVoice";
 import { useAuth } from "@/context/AuthContext";
@@ -84,12 +88,17 @@ export interface UseVoiceRoom {
   isScreenSharing: boolean;
   /** Error message (cleared on successful connect). */
   error: string | null;
+  /** Whether the native voice engine is active. */
+  nativeVoice: boolean;
 }
 
 // ── Hook ────────────────────────────────────────────────────────────
 export function useVoiceRoom(channelId: string, channelName: string): UseVoiceRoom {
   const { session, profile } = useAuth();
   const roomRef = useRef<Room | null>(persistentRoom);
+  // On Linux/Tauri the WebView (WebKitGTK) does not support WebRTC, so
+  // livekit-client's isBrowserSupported() returns false. In that case we
+  // use the native Rust voice engine for audio and video capture.
   const nativeVoice = canUseNativeVoice() && !isBrowserSupported();
 
   const [state, setState] = useState<ConnectionState>(ConnectionState.Disconnected);
@@ -103,6 +112,8 @@ export function useVoiceRoom(channelId: string, channelName: string): UseVoiceRo
   const setCameraOff = useAppStore((state) => state.setCameraOff);
   const setScreenSharing = useAppStore((state) => state.setScreenSharing);
   const setActiveVoiceChannel = useAppStore((state) => state.setActiveVoiceChannel);
+  const screenShareHeight = useAppStore((state) => state.screenShareHeight);
+  const screenShareFps = useAppStore((state) => state.screenShareFps);
   const activeVoiceChannelId = useAppStore((state) => state.activeVoiceChannelId);
 
   const [error, setError] = useState<string | null>(null);
@@ -120,16 +131,18 @@ export function useVoiceRoom(channelId: string, channelName: string): UseVoiceRo
           name: participant.name || participant.identity,
           isSpeaking: false,
           isMicMuted: participant.isLocal ? status.muted : false,
-          isCameraOff: true,
-          isScreenSharing: false,
+          isCameraOff: !participant.isCameraEnabled,
           isLocal: participant.isLocal,
           videoTrack: null,
+          isScreenSharing: participant.isScreenSharing,
           screenTrack: null,
           audioTrack: null,
         })),
       );
+      setScreenSharing(status.screenSharing);
+      setCameraOff(!status.cameraEnabled);
     },
-    [setDeafened, setMicMuted],
+    [setCameraOff, setDeafened, setMicMuted, setScreenSharing],
   );
 
   // ── Helpers ──
@@ -207,8 +220,6 @@ export function useVoiceRoom(channelId: string, channelName: string): UseVoiceRo
         setState(ConnectionState.Connecting);
         const status = await connectNativeVoice(livekitUrl, token);
         syncNativeStatus(status);
-        setCameraOff(true);
-        setScreenSharing(false);
         const directCall = channelId.startsWith("direct-");
         const path = directCall
           ? `/call/${channelId.slice("direct-".length)}?name=${encodeURIComponent(channelName.replace(/^Call with /, ""))}`
@@ -344,7 +355,15 @@ export function useVoiceRoom(channelId: string, channelName: string): UseVoiceRo
 
   const toggleCamera = useCallback(async () => {
     if (nativeVoice) {
-      setError("Camera is not available in the Linux desktop voice engine yet.");
+      try {
+        const status = isCameraOff
+          ? await startNativeCamera()
+          : await stopNativeCamera();
+        syncNativeStatus(status);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : String(err));
+      }
       return;
     }
     const room = roomRef.current;
@@ -356,27 +375,55 @@ export function useVoiceRoom(channelId: string, channelName: string): UseVoiceRo
       setError(null);
       syncParticipants();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Camera permission failed");
+      const raw = err instanceof Error ? err.message : String(err);
+      const msg = /not allowed|permission|denied|not found/i.test(raw)
+        ? "Kamera izni reddedildi veya kamera bulunamadı. Linux'ta GStreamer eklentilerinin kurulu olduğundan emin ol (gst-plugins-good, gst-plugins-bad)."
+        : raw;
+      setError(msg);
     }
-  }, [nativeVoice, syncParticipants, setCameraOff]);
+  }, [nativeVoice, isCameraOff, syncNativeStatus, syncParticipants, setCameraOff]);
 
   const toggleScreenShare = useCallback(async () => {
     if (nativeVoice) {
-      setError("Screen sharing is not available in the Linux desktop voice engine yet.");
+      try {
+        const status = isScreenSharing
+          ? await stopNativeScreenShare()
+          : await startNativeScreenShare(screenShareHeight, screenShareFps);
+        syncNativeStatus(status);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : String(err));
+      }
       return;
     }
     const room = roomRef.current;
     if (!room) return;
     try {
       const next = !room.localParticipant.isScreenShareEnabled;
-      await room.localParticipant.setScreenShareEnabled(next);
+      await room.localParticipant.setScreenShareEnabled(
+        next,
+        next
+          ? {
+              resolution: {
+                width: Math.round((screenShareHeight * 16) / 9),
+                height: screenShareHeight,
+                frameRate: screenShareFps,
+              },
+              contentHint: screenShareFps >= 30 ? "motion" : "detail",
+            }
+          : undefined,
+      );
       setScreenSharing(next);
       setError(null);
       syncParticipants();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Screen sharing failed");
+      const raw = err instanceof Error ? err.message : String(err);
+      const msg = /not allowed|permission|denied|not supported/i.test(raw)
+        ? "Ekran paylaşımı başarısız. WebKitGTK'da ekran paylaşımı için PipeWire ve xdg-desktop-portal kurulu olmalıdır."
+        : raw;
+      setError(msg);
     }
-  }, [nativeVoice, syncParticipants, setScreenSharing]);
+  }, [nativeVoice, isScreenSharing, screenShareHeight, screenShareFps, syncNativeStatus, syncParticipants, setScreenSharing]);
 
   // The native SDK owns its event loop. Poll its small status object so React
   // reflects people joining/leaving and local mute changes.
@@ -451,6 +498,7 @@ export function useVoiceRoom(channelId: string, channelName: string): UseVoiceRo
     isCameraOff,
     isScreenSharing,
     error,
+    nativeVoice,
   };
 }
 

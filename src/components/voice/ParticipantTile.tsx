@@ -1,13 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MicOff, MonitorOff } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { cn, initials } from "@/lib/utils";
 import type { VoiceParticipant } from "@/hooks/useVoiceRoom";
+import { getNativeVideoFrame } from "@/lib/nativeVoice";
 
 interface ParticipantTileProps {
   participant: VoiceParticipant;
   /** When true, renders at a larger size (e.g. screen-share spotlight). */
   spotlight?: boolean;
+  nativeVoice?: boolean;
 }
 
 /**
@@ -18,7 +20,7 @@ interface ParticipantTileProps {
  * - Speaking → green pulsing ring.
  * - Mic muted → small MicOff icon overlay.
  */
-export function ParticipantTile({ participant, spotlight }: ParticipantTileProps) {
+export function ParticipantTile({ participant, spotlight, nativeVoice }: ParticipantTileProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const {
@@ -71,7 +73,14 @@ export function ParticipantTile({ participant, spotlight }: ParticipantTileProps
     >
       {!isLocal && <audio ref={audioRef} autoPlay playsInline />}
       {/* Video layer */}
-      {!isCameraOff && videoTrack ? (
+      {!isCameraOff && nativeVoice ? (
+        <NativeVideoImage
+          identity={participant.identity}
+          source="camera"
+          alt={`${name}'s camera`}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      ) : !isCameraOff && videoTrack ? (
         <video
           ref={videoRef}
           autoPlay
@@ -98,7 +107,7 @@ export function ParticipantTile({ participant, spotlight }: ParticipantTileProps
       )}
 
       {/* Name badge (shown over video) */}
-      {!isCameraOff && videoTrack && (
+      {!isCameraOff && (videoTrack || nativeVoice) && (
         <div className="absolute bottom-2 left-2 flex items-center bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded-sm">
           <span className="font-code-sm text-code-sm text-white truncate max-w-[120px]">
             {name}
@@ -152,6 +161,79 @@ export function ScreenShareTile({ participant }: { participant: VoiceParticipant
           {participant.name}'s screen
         </span>
       </div>
+    </div>
+  );
+}
+
+/** Displays native Rust screen-share frames inside the WebKit UI. */
+export function NativeScreenShareTile({
+  participant,
+}: {
+  participant: VoiceParticipant;
+}) {
+  return (
+    <div className="relative col-span-full flex aspect-video items-center justify-center overflow-hidden border border-outline-variant bg-black">
+      <NativeVideoImage
+        identity={participant.identity}
+        source="screen"
+        alt={`${participant.name}'s screen`}
+        className="h-full w-full object-contain"
+      />
+      <div className="absolute bottom-2 left-2 bg-black/60 px-2 py-0.5 text-xs text-white">
+        {participant.name}'s screen
+      </div>
+    </div>
+  );
+}
+
+function NativeVideoImage({
+  identity,
+  source,
+  alt,
+  className,
+}: {
+  identity: string;
+  source: "screen" | "camera";
+  alt: string;
+  className: string;
+}) {
+  const [src, setSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    let inFlight = false;
+    let objectUrl: string | null = null;
+    const update = async () => {
+      if (inFlight) return;
+      inFlight = true;
+      try {
+        const bytes = await getNativeVideoFrame(identity, source);
+        if (!active) return;
+        const next = URL.createObjectURL(new Blob([bytes], { type: "image/jpeg" }));
+        setSrc(next);
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        objectUrl = next;
+      } catch {
+        // The capture/decoder can take a moment to produce its first frame.
+      } finally {
+        inFlight = false;
+      }
+    };
+    void update();
+    const timer = window.setInterval(() => void update(), 80);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [identity, source]);
+
+  return src ? (
+    <img src={src} alt={alt} className={className} />
+  ) : (
+    <div className="text-center text-on-surface-variant">
+      <MonitorOff className="mx-auto mb-sm h-8 w-8 text-primary" />
+      Waiting for video…
     </div>
   );
 }

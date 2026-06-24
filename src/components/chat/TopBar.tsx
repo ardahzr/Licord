@@ -120,14 +120,12 @@ export function TopBar({
             active={membersOpen}
             onClick={onToggleMembers}
           />
-          {!group && (
-            <IconButton
-              label="Toggle co-watch panel"
-              icon={MonitorPlay}
-              active={rightPanelOpen}
-              onClick={toggleRightPanel}
-            />
-          )}
+          <IconButton
+            label="Toggle co-watch panel"
+            icon={MonitorPlay}
+            active={rightPanelOpen}
+            onClick={toggleRightPanel}
+          />
         </div>
       </div>
     </header>

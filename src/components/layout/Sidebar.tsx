@@ -319,9 +319,10 @@ export function Sidebar({
             </div>
             <button
               type="button"
-              title="Settings (coming soon)"
-              disabled
-              className="p-xs text-on-surface-variant opacity-40"
+              title="Settings"
+              aria-label="Settings"
+              onClick={() => navigate("/settings")}
+              className="p-xs text-on-surface-variant transition-colors hover:text-primary"
             >
               <Settings className="h-4 w-4" />
             </button>

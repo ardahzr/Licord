@@ -7,6 +7,7 @@ import { VoiceRoomPage } from "@/pages/VoiceRoomPage";
 import { DirectCallPage } from "@/pages/DirectCallPage";
 import { GroupChatPage } from "@/pages/GroupChatPage";
 import { AuthPage } from "@/pages/AuthPage";
+import { SettingsPage } from "@/pages/SettingsPage";
 
 /**
  * HashRouter avoids deep-link 404s when the packaged Tauri app serves the bundle
@@ -25,6 +26,7 @@ export default function App() {
             <Route path="call/:roomId" element={<DirectCallPage />} />
             <Route path="dms/:groupId" element={<GroupChatPage />} />
             <Route path="friends" element={<FriendsPage />} />
+            <Route path="settings" element={<SettingsPage />} />
           </Route>
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

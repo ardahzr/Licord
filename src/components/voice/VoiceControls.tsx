@@ -3,12 +3,11 @@ import {
   MicOff,
   Video,
   VideoOff,
-  ScreenShare,
-  ScreenShareOff,
   PhoneOff,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { ScreenShareButton } from "@/components/voice/ScreenShareButton";
 
 interface VoiceControlsProps {
   isMicMuted: boolean;
@@ -19,6 +18,7 @@ interface VoiceControlsProps {
   onToggleScreenShare: () => void;
   onDisconnect: () => void;
   disabled?: boolean;
+  nativeVoice?: boolean;
 }
 
 /**
@@ -68,18 +68,11 @@ export function VoiceControls({
       </ControlButton>
 
       {/* Screen Share */}
-      <ControlButton
-        label={isScreenSharing ? "Stop sharing" : "Share screen"}
-        active={isScreenSharing}
-        onClick={onToggleScreenShare}
+      <ScreenShareButton
+        sharing={isScreenSharing}
+        onToggle={onToggleScreenShare}
         disabled={disabled}
-      >
-        {isScreenSharing ? (
-          <ScreenShareOff className="w-5 h-5" />
-        ) : (
-          <ScreenShare className="w-5 h-5" />
-        )}
-      </ControlButton>
+      />
 
       {/* Divider */}
       <div className="w-px h-8 bg-outline-variant mx-sm" />

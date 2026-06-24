@@ -18,6 +18,15 @@ export interface AppNotification {
  * (System Directive: prefer Zustand/Context over Redux.)
  */
 interface AppState {
+  screenShareHeight: 720 | 1080 | 1440;
+  screenShareFps: 15 | 30 | 60;
+  setScreenShareQuality: (height: 720 | 1080 | 1440, fps: 15 | 30 | 60) => void;
+  reducedMotion: boolean;
+  compactMode: boolean;
+  notificationSounds: boolean;
+  setReducedMotion: (enabled: boolean) => void;
+  setCompactMode: (enabled: boolean) => void;
+  setNotificationSounds: (enabled: boolean) => void;
   /** Discord-like server/community selected in the left rail. */
   activeServerId: string | null;
   setActiveServer: (id: string | null) => void;
@@ -62,6 +71,34 @@ interface AppState {
 }
 
 export const useAppStore = create<AppState>((set) => ({
+  screenShareHeight: Number(localStorage.getItem("licord.screenHeight")) === 1440
+    ? 1440
+    : Number(localStorage.getItem("licord.screenHeight")) === 720 ? 720 : 1080,
+  screenShareFps: Number(localStorage.getItem("licord.screenFps")) === 60
+    ? 60
+    : Number(localStorage.getItem("licord.screenFps")) === 15 ? 15 : 30,
+  setScreenShareQuality: (height, fps) => {
+    localStorage.setItem("licord.screenHeight", String(height));
+    localStorage.setItem("licord.screenFps", String(fps));
+    set({ screenShareHeight: height, screenShareFps: fps });
+  },
+  reducedMotion: localStorage.getItem("licord.reducedMotion") === "true",
+  compactMode: localStorage.getItem("licord.compactMode") === "true",
+  notificationSounds: localStorage.getItem("licord.notificationSounds") !== "false",
+  setReducedMotion: (enabled) => {
+    localStorage.setItem("licord.reducedMotion", String(enabled));
+    document.documentElement.classList.toggle("reduce-motion", enabled);
+    set({ reducedMotion: enabled });
+  },
+  setCompactMode: (enabled) => {
+    localStorage.setItem("licord.compactMode", String(enabled));
+    document.documentElement.classList.toggle("compact-ui", enabled);
+    set({ compactMode: enabled });
+  },
+  setNotificationSounds: (enabled) => {
+    localStorage.setItem("licord.notificationSounds", String(enabled));
+    set({ notificationSounds: enabled });
+  },
   activeServerId: null,
   setActiveServer: (id) => set({ activeServerId: id }),
 

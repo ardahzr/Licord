@@ -5,6 +5,7 @@ import { useVoiceRoom } from "@/hooks/useVoiceRoom";
 import { VoiceControls } from "@/components/voice/VoiceControls";
 import {
   ParticipantTile,
+  NativeScreenShareTile,
   ScreenShareTile,
 } from "@/components/voice/ParticipantTile";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,7 @@ export function VoiceRoom({
     isCameraOff,
     isScreenSharing,
     error,
+    nativeVoice,
   } = useVoiceRoom(channelId, channelName);
   const stateRef = useRef(state);
   stateRef.current = state;
@@ -177,11 +179,20 @@ export function VoiceRoom({
       <div className="flex-1 overflow-y-auto p-md min-h-0">
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-sm auto-rows-min">
           {/* Screen share spotlight */}
-          {screenSharer && <ScreenShareTile participant={screenSharer} />}
+          {screenSharer &&
+            (nativeVoice ? (
+              <NativeScreenShareTile participant={screenSharer} />
+            ) : (
+              <ScreenShareTile participant={screenSharer} />
+            ))}
 
           {/* Participant tiles */}
           {participants.map((p) => (
-            <ParticipantTile key={p.identity} participant={p} />
+            <ParticipantTile
+              key={p.identity}
+              participant={p}
+              nativeVoice={nativeVoice}
+            />
           ))}
         </div>
 
@@ -201,6 +212,7 @@ export function VoiceRoom({
         onToggleCamera={toggleCamera}
         onToggleScreenShare={toggleScreenShare}
         onDisconnect={disconnect}
+        nativeVoice={nativeVoice}
       />
     </div>
   );

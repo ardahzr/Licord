@@ -32,6 +32,24 @@
   }
 }
 
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+  transition-duration: 0.01ms !important;
+}
+
+.compact-ui {
+  font-size: 14px;
+}
+
+.compact-ui [data-message-row] {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
 @layer components {
   /* Auth screen: subtle "terminal grid" backdrop (ported from Stitch auth design). */
   .terminal-bg {

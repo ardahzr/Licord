@@ -28,6 +28,8 @@ export interface AppOutletContext {
  * (Outlet context). The optional right co-watch column lives in the pages.
  */
 export function AppLayout() {
+  const reducedMotion = useAppStore((state) => state.reducedMotion);
+  const compactMode = useAppStore((state) => state.compactMode);
   const {
     servers,
     loading: serversLoading,
@@ -50,6 +52,11 @@ export function AppLayout() {
   const friends = useFriends();
   const groupChats = useGroupChats();
   const voiceUsers = useGlobalVoicePresence();
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("reduce-motion", reducedMotion);
+    document.documentElement.classList.toggle("compact-ui", compactMode);
+  }, [compactMode, reducedMotion]);
 
   useEffect(() => {
     if (serversLoading) return;
