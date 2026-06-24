@@ -20,8 +20,6 @@ export const env = {
     publicUrl: read("VITE_R2_PUBLIC_URL"),
     bucket: read("VITE_R2_BUCKET_NAME"),
     endpoint: read("VITE_R2_ENDPOINT"),
-    accessKeyId: read("VITE_R2_ACCESS_KEY_ID"),
-    secretAccessKey: read("VITE_R2_SECRET_ACCESS_KEY"),
   },
   livekit: {
     url: read("VITE_LIVEKIT_URL"),
