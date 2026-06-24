@@ -48,6 +48,16 @@ pnpm tauri:build          # native bundle (AppImage / deb)
 pnpm package:linux        # local Linux .deb upstream artifact
 pnpm package:linux:appimage # AppImage (best run on Ubuntu/CI)
 pnpm package:windows      # Windows NSIS .exe installer, run on Windows
+pnpm package:windows:cross # experimental Windows NSIS build from Arch/CachyOS
+```
+
+For Windows cross-builds on Arch/CachyOS:
+
+```bash
+cargo install --locked cargo-xwin
+yay -S nsis
+sudo pacman -S lld
+pnpm package:windows:cross
 ```
 
 ## Install on Arch / CachyOS

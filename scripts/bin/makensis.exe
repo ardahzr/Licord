@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if ! command -v makensis >/dev/null 2>&1; then
+  echo "makensis is missing. On Arch/CachyOS install it from AUR with: yay -S nsis" >&2
+  exit 127
+fi
+
+exec makensis "$@"

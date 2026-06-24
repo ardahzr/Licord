@@ -15,7 +15,7 @@
     "package:linux": "tauri build --bundles deb",
     "package:linux:appimage": "NO_STRIP=1 tauri build --bundles appimage",
     "package:windows": "tauri build --bundles nsis",
-    "package:windows:cross": "tauri build --bundles nsis --runner cargo-xwin --target x86_64-pc-windows-msvc"
+    "package:windows:cross": "PATH=./scripts/bin:$PATH tauri build --bundles nsis --runner cargo-xwin --target x86_64-pc-windows-msvc"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.658.1",
