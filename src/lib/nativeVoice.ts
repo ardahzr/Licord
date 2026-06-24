@@ -18,7 +18,8 @@ export interface NativeVoiceStatus {
 }
 
 export function canUseNativeVoice(): boolean {
-  return isTauri();
+  if (!isTauri()) return false;
+  return navigator.userAgent.toLowerCase().includes("linux");
 }
 
 export function connectNativeVoice(url: string, token: string) {

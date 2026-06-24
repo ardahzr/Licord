@@ -6,7 +6,13 @@
 // system tray, frameless window handling, and Wayland/X11 niceties.
 
 mod media;
+#[cfg(target_os = "linux")]
 mod native_voice;
+#[cfg(not(target_os = "linux"))]
+mod native_voice_stub;
+
+#[cfg(not(target_os = "linux"))]
+use native_voice_stub as native_voice;
 
 /// Returns the app version baked in at compile time. Smoke-test for the IPC bridge.
 #[tauri::command]

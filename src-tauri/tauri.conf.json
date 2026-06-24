@@ -37,8 +37,17 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "category": "Network",
+    "category": "SocialNetworking",
     "shortDescription": "Lightweight native Discord alternative for Linux",
-    "longDescription": "Licord is a fast, native, resource-efficient communication client for Arch Linux / CachyOS. Text, media, synchronized YouTube co-watching, and voice/video — without Electron."
+    "longDescription": "Licord is a fast, native, resource-efficient communication client for Arch Linux / CachyOS. Text, media, synchronized YouTube co-watching, and voice/video — without Electron.",
+    "windows": {
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper"
+      },
+      "nsis": {
+        "installMode": "currentUser",
+        "displayLanguageSelector": true
+      }
+    }
   }
 }

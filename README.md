@@ -42,6 +42,22 @@ pnpm build                # typecheck + production web build
 pnpm tauri:build          # native bundle (AppImage / deb)
 ```
 
+## Packaging / release
+
+```bash
+pnpm package:linux        # local Linux .deb
+pnpm package:linux:appimage # AppImage (best run on Ubuntu/CI)
+pnpm package:windows      # Windows NSIS .exe installer, run on Windows
+```
+
+Release automation lives in [`.github/workflows/release.yml`](.github/workflows/release.yml).
+Push a tag such as `v0.1.0` to build Linux artifacts and the Windows `.exe`
+installer and upload them to the GitHub Release.
+
+AUR recipes are in [`packaging/aur`](packaging/aur). Replace the
+`https://github.com/CHANGE_ME/licord` placeholders with the real public
+repository URL before pushing to AUR.
+
 ## Project layout
 
 ```
