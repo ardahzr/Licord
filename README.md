@@ -54,9 +54,8 @@ Release automation lives in [`.github/workflows/release.yml`](.github/workflows/
 Push a tag such as `v0.1.0` to build Linux artifacts and the Windows `.exe`
 installer and upload them to the GitHub Release.
 
-AUR recipes are in [`packaging/aur`](packaging/aur). Replace the
-`https://github.com/CHANGE_ME/licord` placeholders with the real public
-repository URL before pushing to AUR.
+AUR recipes are in [`packaging/aur`](packaging/aur) and are configured for
+`https://github.com/ardahzr/Licord`.
 
 ## Project layout
 

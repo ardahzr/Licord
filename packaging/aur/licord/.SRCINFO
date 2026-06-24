@@ -2,7 +2,7 @@ pkgbase = licord
 	pkgdesc = A fast, native, resource-efficient communication client for Arch Linux / CachyOS (Better-VC)
 	pkgver = 0.1.0
 	pkgrel = 1
-	url = https://github.com/CHANGE_ME/licord
+	url = https://github.com/ardahzr/Licord
 	arch = x86_64
 	license = MIT
 	makedepends = cargo
@@ -26,7 +26,7 @@ pkgbase = licord
 	depends = gst-plugins-ugly
 	options = !strip
 	options = !debug
-	source = git+https://github.com/CHANGE_ME/licord.git#tag=v0.1.0
+	source = git+https://github.com/ardahzr/Licord.git#tag=v0.1.0
 	sha256sums = SKIP
 
 pkgname = licord

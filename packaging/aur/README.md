@@ -5,11 +5,7 @@ This project ships two AUR recipes:
 - `licord`: builds the app from the Git tag.
 - `licord-bin`: installs the prebuilt `.deb` from a GitHub Release, which is faster for users.
 
-Before publishing, replace `https://github.com/CHANGE_ME/licord` with the real public repository URL in:
-
-- `PKGBUILD`
-- `packaging/aur/licord/PKGBUILD`
-- `packaging/aur/licord-bin/PKGBUILD`
+The AUR recipes are configured for `https://github.com/ardahzr/Licord`.
 
 Generate metadata:
 
