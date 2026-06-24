@@ -39,6 +39,8 @@ pub fn run() {
                     });
                 }
             }
+            #[cfg(not(target_os = "linux"))]
+            let _ = app;
             Ok(())
         })
         .manage(native_voice::NativeVoiceState::default())

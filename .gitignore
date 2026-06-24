@@ -28,3 +28,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# Release/package artifacts
+*.pkg.tar.*
+*.AppImage
+*.deb
+*.msi
+*setup*.exe
+*_portable.zip
+packaging/aur/*/pkg/
+packaging/aur/*/src/

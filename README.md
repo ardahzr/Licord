@@ -45,9 +45,21 @@ pnpm tauri:build          # native bundle (AppImage / deb)
 ## Packaging / release
 
 ```bash
-pnpm package:linux        # local Linux .deb
+pnpm package:linux        # local Linux .deb upstream artifact
 pnpm package:linux:appimage # AppImage (best run on Ubuntu/CI)
 pnpm package:windows      # Windows NSIS .exe installer, run on Windows
+```
+
+## Install on Arch / CachyOS
+
+```bash
+yay -S licord-bin
+```
+
+Or install the prebuilt pacman package from the GitHub Release:
+
+```bash
+sudo pacman -U licord-bin-0.1.0-1-x86_64.pkg.tar.zst
 ```
 
 Release automation lives in [`.github/workflows/release.yml`](.github/workflows/release.yml).
